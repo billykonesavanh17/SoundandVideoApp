@@ -9,6 +9,7 @@ import android.view.View;
 import android.media.MediaPlayer;
 import android.content.Intent;
 import android.app.Activity;
+import android.graphics.Color;
 
 public class SoundActivity extends Activity implements Runnable
 
@@ -17,9 +18,12 @@ public class SoundActivity extends Activity implements Runnable
     private Button stopButton;
     private Button pauseButton;
     private Button videoButton;
+    private Button changeColorButton;
     private MediaPlayer soundPlayer;
     private SeekBar soundSeekBar;
     private Thread soundThread;
+    private RelativeLayout soundLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -30,6 +34,8 @@ public class SoundActivity extends Activity implements Runnable
         startButton = (Button) findViewById(R.id.playButton);
         pauseButton = (Button) findViewById(R.id.pauseButton);
         stopButton = (Button) findViewById(R.id.stopButton);
+        changeColorButton = (Button) findViewById(R.id.changeColorButton);
+        soundLayout = (RelativeLayout) findViewById(R.id.soundLayout);
         soundSeekBar = (SeekBar) findViewById(R.id.soundSeekBar);
         videoButton = (Button) findViewById(R.id.videoButton);
         soundPlayer = MediaPlayer.create(this.getBaseContext(), R.raw.pokemon);
@@ -40,14 +46,43 @@ public class SoundActivity extends Activity implements Runnable
         soundThread.start();
     }
 
+    private void changeBackgroundColor()
+    {
+        int redColor;
+        int greenColor;
+        int blueColor;
+
+        redColor = (int) (Math.random() * 256);
+        greenColor = (int) (Math.random() * 256);
+        blueColor = (int) (Math.random() * 256);
+
+        soundLayout.setBackgroundColor(Color.rgb(redColor, greenColor, blueColor));
+
+        redColor = (int) (Math.random() * 256);
+        greenColor = (int) (Math.random() * 256);
+        blueColor = (int) (Math.random() * 256);
+
+        changeColorButton.setBackgroundColor(Color.rgb(redColor, greenColor, blueColor));
+    }
+
     private void setupListeners()
     {
+
+        changeColorButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View buttonView)
+            {
+                changeBackgroundColor();
+            }
+        });
+
         startButton.setOnClickListener(new View.OnClickListener()
         {
            @Override
             public void onClick(View v)
            {
                soundPlayer.start();
+
            }
         });
 
@@ -62,37 +97,42 @@ public class SoundActivity extends Activity implements Runnable
 
         stopButton.setOnClickListener(new View.OnClickListener()
         {
-           @Override
+            @Override
             public void onClick(View currentView)
-           {
-               soundPlayer.stop();
-               soundPlayer = MediaPlayer.create(getBaseContext(), R.raw.pokemon);
-           }
+            {
+                soundPlayer.stop();
+                soundPlayer = MediaPlayer.create(getBaseContext(), R.raw.pokemon);
+            }
         });
 
         videoButton.setOnClickListener(new View.OnClickListener()
         {
-           @Override
+            @Override
             public void onClick(View currentView)
-           {
-               Intent myIntent = new Intent(currentView.getContext(), VideoActivity.class);
-           }
+            {
+                Intent myIntent = new Intent(currentView.getContext(), VideoActivity.class);
+                startActivityForResult(myIntent, 0);
+            }
         });
+
 
         soundSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
         {
-           @Override
+            @Override
             public void onStopTrackingTouch(SeekBar seekBar)
-           {}
+            {
+            }
+
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar)
-            {}
+            {
+            }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
-                if(fromUser)
+                if (fromUser)
                 {
                     soundPlayer.seekTo(progress);
                 }
@@ -139,6 +179,7 @@ public class SoundActivity extends Activity implements Runnable
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -155,4 +196,6 @@ public class SoundActivity extends Activity implements Runnable
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

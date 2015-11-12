@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.*;
 import android.net.Uri;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class VideoActivity extends Activity
 {
@@ -29,27 +31,54 @@ public class VideoActivity extends Activity
         returnButton = (Button) findViewById(R.id.homeButton);
 
         videoLocation = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.never);
+        myVideoController = new MediaController(this);
+        //Prepare the video.
+        setupMedia();
+        setupListeners();
     }
 
+    private void setupMedia()
+    {
+        myPlayer.setMediaController(myVideoController);
+        myPlayer.setVideoURI(videoLocation);
+    }
+
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_video, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
+        {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setupListeners()
+    {
+        returnButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View currentView)
+            {
+                Intent returnIntent = new Intent();
+                setResult(RESULT_OK, returnIntent);
+                finish();
+            }
+        });
     }
 }
